@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
 ## Hasil Eksekusi
 Sertakan screenshot hasil percobaan atau diagram:
-(<screenshots/Screen Shot 2026-01-23 at 00.33.25.png>)
+(<screenshots/2026-01-23 at 00.33.25.png>)
 ---
 
 ## Analisis
