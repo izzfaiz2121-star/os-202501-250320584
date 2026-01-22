@@ -25,6 +25,7 @@ Praktikum minggu ke-10 berfokus pada simulasi Manajemen Memori Virtual, khususny
 Python
 
 # Reference String & Konfigurasi Frame
+
 reference_string = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2]
 frames = 3
 
