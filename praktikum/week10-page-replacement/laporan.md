@@ -26,55 +26,63 @@ Praktikum minggu ke-10 berfokus pada simulasi Manajemen Memori Virtual, khususny
 ## Kode / Perintah
 
 ```python
-# SIMULASI 1: FIFO (First-In First-Out)
+# Dataset sesuai instruksi praktikum
+pages = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2]
+jumlah_frame = 3
+
+def cetak_langkah(step, page, status, frames):
+    # Mengonversi list frame menjadi string agar rapi saat dicetak
+    frame_display = str(frames)
+    print(f"Langkah {step:02d} | Page: {page} | Status: {status:4s} | Frame: {frame_display}")
+
+print("=== SIMULASI PAGE REPLACEMENT (FIFO) ===")
 frames_fifo = [] 
+fifo_faults = 0
+pointer = 0
 
 for i, page in enumerate(pages):
     status = ""
-    
-    # Cek apakah page sudah ada di frame (HIT)
     if page in frames_fifo:
         status = "HIT"
     else:
         status = "MISS"
         fifo_faults += 1
-        
-        # Jika frame belum penuh, masukkan saja
         if len(frames_fifo) < jumlah_frame:
             frames_fifo.append(page)
         else:
-            # Jika penuh, ganti halaman yang ditunjuk pointer
             frames_fifo[pointer] = page
-            # Geser pointer secara memutar (0 -> 1 -> 2 -> 0 -> ...)
             pointer = (pointer + 1) % jumlah_frame
             
     cetak_langkah(i+1, page, status, frames_fifo)
 
-# SIMULASI 2: LRU (Least Recently Used)
+print(f"Total Page Fault (FIFO): {fifo_faults}\n")
+
+
+
+print("=== SIMULASI PAGE REPLACEMENT (LRU) ===")
 frames_lru = []
 lru_faults = 0
 
 for i, page in enumerate(pages):
     status = ""
-    
     if page in frames_lru:
         status = "HIT"
-        # Logika LRU: Jika terpakai, pindahkan ke posisi paling kanan (Most Recent)
+        # Logika LRU: Pindahkan yang baru dipakai ke posisi paling kanan
         frames_lru.remove(page)
         frames_lru.append(page)
     else:
         status = "MISS"
         lru_faults += 1
-        
         if len(frames_lru) < jumlah_frame:
             frames_lru.append(page)
         else:
-            # Jika penuh, hapus yang paling kiri (paling lama tak dipakai)
+            # Hapus yang paling kiri (paling jarang digunakan baru-baru ini)
             frames_lru.pop(0)
             frames_lru.append(page)
             
     cetak_langkah(i+1, page, status, frames_lru)
-print(">> Kode lengkap ada di folder code/")
+
+print(f"Total Page Fault (LRU): {lru_faults}")
 ```
 ---
 
@@ -86,7 +94,7 @@ python code/page_replacement.py
 
 ## Hasil Eksekusi
 Sertakan screenshot hasil percobaan atau diagram:
-![Screenshot hasil](screenshots/example.png)
+![Hasil Simulasi Page Replacement](./screenshots/hasil_simulasi.png)
 
 ---
 
