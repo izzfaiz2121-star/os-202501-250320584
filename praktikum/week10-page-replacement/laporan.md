@@ -93,8 +93,7 @@ python code/page_replacement.py
 ---
 
 ## Hasil Eksekusi
-Sertakan screenshot hasil percobaan atau diagram:
-![Hasil Simulasi Page Replacement](./screenshots/hasil_simulasi.png)
+![Hasil Simulasi](screenshots/hasil_simulasi.png)
 
 ---
 
