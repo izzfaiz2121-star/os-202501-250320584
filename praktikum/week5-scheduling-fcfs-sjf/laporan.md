@@ -37,10 +37,7 @@ Dalam sistem operasi multitasking, Penjadwalan CPU (CPU Scheduling) adalah prose
 7. Menganalisis hasil perbandingan untuk menentukan kelebihan dan kekurangan masing-masing.
 8. Mendokumentasikan seluruh hasil simulasi, perhitungan, dan analisis dalam file laporan.md.
 9. Melakukan commit dan push hasil praktikum ke repositori GitHub.
-
-git add .
-git commit -m "Minggu 5 - CPU Scheduling FCFS & SJF"
-git push origin main
+    
 ---
 
 ## Kode / Perintah
@@ -49,6 +46,7 @@ Turnaround Time (TAT) = Finish Time - Arrival Time atau  Waiting Time + Burst Ti
 
 Average Waiting Time (WT) = Total Waiting Time / Jumlah Proses
 Average Turnaround Time (TAT) = Total Turnaround Time / Jumlah Proses
+
 ---
 
 ## Hasil Eksekusi
