@@ -93,7 +93,7 @@ python code/page_replacement.py
 ---
 
 ## Hasil Eksekusi
-![Hasil Simulasi](screenshots/hasil_simulasi.png)
+
 
 ---
 
