@@ -1,4 +1,3 @@
-
 # Laporan Praktikum Minggu 5
 Topik: Penjadwalan CPU FCFS dan SJF
 ---
@@ -21,9 +20,9 @@ Topik: Penjadwalan CPU FCFS dan SJF
 ## Dasar Teori
 Dalam sistem operasi multitasking, Penjadwalan CPU (CPU Scheduling) adalah proses fundamental di mana sistem operasi (OS) memutuskan proses mana di antrian ready yang akan dialokasikan ke CPU. Tujuannya adalah untuk memaksimalkan penggunaan CPU dan throughput, serta meminimalkan waktu tunggu (waiting time) dan waktu penyelesaian (turnaround time) bagi pengguna.
 
-- First Come First Served (FCFS): Ini adalah algoritma penjadwalan paling sederhana. Proses yang meminta CPU terlebih dahulu akan dilayani terlebih dahulu (sesuai urutan Arrival Time). Implementasinya mudah menggunakan antrian FIFO (First-In, First-Out), namun dapat menyebabkan convoy effect di mana proses singkat harus menunggu proses panjang yang datang lebih dulu.
+* First Come First Served (FCFS): Ini adalah algoritma penjadwalan paling sederhana. Proses yang meminta CPU terlebih dahulu akan dilayani terlebih dahulu (sesuai urutan Arrival Time). Implementasinya mudah menggunakan antrian FIFO (First-In, First-Out), namun dapat menyebabkan convoy effect di mana proses singkat harus menunggu proses panjang yang datang lebih dulu.
 
-- Shortest Job First (SJF): Algoritma ini mengalokasikan CPU ke proses dengan estimasi waktu eksekusi (Burst Time) terpendek. Jika ada dua proses dengan burst time yang sama, FCFS digunakan. SJF terbukti optimal dalam memberikan rata-rata waktu tunggu minimum, nam
+* Shortest Job First (SJF): Algoritma ini mengalokasikan CPU ke proses dengan estimasi waktu eksekusi (Burst Time) terpendek. Jika ada dua proses dengan burst time yang sama, FCFS digunakan. SJF terbukti optimal dalam memberikan rata-rata waktu tunggu minimum, nam
 
 ---
 
@@ -41,11 +40,13 @@ Dalam sistem operasi multitasking, Penjadwalan CPU (CPU Scheduling) adalah prose
 ---
 
 ## Kode / Perintah
+```text
 Waiting Time (WT) = Start Time - Arrival Time
 Turnaround Time (TAT) = Finish Time - Arrival Time atau  Waiting Time + Burst Time
 
 Average Waiting Time (WT) = Total Waiting Time / Jumlah Proses
 Average Turnaround Time (TAT) = Total Turnaround Time / Jumlah Proses
+```
 
 ---
 
@@ -53,45 +54,62 @@ Average Turnaround Time (TAT) = Total Turnaround Time / Jumlah Proses
 Sertakan screenshot hasil percobaan atau diagram:
 ![Screenshot hasil](screenshots/example.png)
 
+---
+
 ## Eksperimen 1 – FCFS (First Come First Served)
-> Proses dieksekusi berdasarkan urutan kedatangan (Arrival Time). 
+* Proses dieksekusi berdasarkan urutan kedatangan (Arrival Time). 
 Urutan Eksekusi: P1 -> P2 -> P3 -> P4
 
-> Gantt Chart FCFS:
+* Gantt Chart FCFS:
 
-+----------+----------------+--------------+------+
-|    P1    |       P2       |      P3      |  P4  |
-+----------+----------------+--------------+------+
-0          6               14             21     24
+* **Gantt Chart FCFS:**
+```text
+|    P1    |      P2      |     P3     |  P4  |
+0          6             14           21     24
+```
 
-> Tabel Perhitungan FCFS:
 
-Proses,Arrival Time,Burst Time,Start Time,Finish Time,Waiting Time,Turnaround Time
-P1,0,6,0,6,0,6
-P2,1,8,6,14,5,13
-P3,2,7,14,21,12,19
-P4,3,3,21,24,18,21
-Total,,,,,35,59
-Average,,,,,"8,75","14,75"
+* Tabel Perhitungan FCFS:
+
+| Proses | Arrival Time | Burst Time | Start Time | Finish Time | Waiting Time | Turnaround Time |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| P1 | 0 | 6 | 0 | 6 | 0 | 6 |
+| P2 | 1 | 8 | 6 | 14 | 5 | 13 |
+| P3 | 2 | 7 | 14 | 21 | 12 | 19 |
+| P4 | 3 | 3 | 21 | 24 | 18 | 21 |
+| **Average** | | | | | **8,75** | **14,75** |
+
+---
+
 
 ## Eksperimen 2 – SJF (Shortest Job First)
 > Proses dieksekusi berdasarkan Burst Time terpendek dari antrian proses yang telah tiba.
 
 > Urutan Eksekusi: P1 -> P4 -> P3 -> P2
 
-> Gantt Chart SJF:
+* **Gantt Chart SJF:**
+```text
 +----------+------+--------------+----------------+
 |    P1    |  P4  |      P3      |       P2       |
 +----------+------+--------------+----------------+
 0          6      9             16               24
 
+* Tabel Perhitungan SJF:
 
-
+ | Proses | Arrival Time | Burst Time | Start Time | Finish Time | Waiting Time | Turnaround Time |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| P1 | 0 | 6 | 0 | 6 | 0 | 6 |
+| P4 | 3 | 3 | 6 | 9 | 3 | 6 |
+| P3 | 2 | 7 | 9 | 16 | 7 | 14 |
+| P2 | 1 | 8 | 16 | 24 | 15 | 23 |
+| **Average** | | | | | **6,25** | **12,25** | 
+```
 
 ---
 
 ## Analisis
 Berdasarkan metrik yang diperoleh, SJF lebih unggul dalam menekan rata-rata waktu tunggu dibandingkan FCFS. Pada FCFS, terjadi fenomena convoy effect di mana P4 (proses singkat) harus mengantri sangat lama karena tertahan oleh proses besar di depannya. SJF mengatasi hal ini dengan "melompati" antrian untuk mengerjakan P4 lebih awal, sehingga efisiensi sistem meningkat secara rata-rata.
+
 ---
 
 ## Kesimpulan
