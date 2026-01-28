@@ -1,6 +1,6 @@
-
 # Laporan Praktikum Minggu 10
 Topik: Manajemen Memori – Page Replacement (FIFO & LRU)
+
 ---
 
 ## Identitas
@@ -13,6 +13,8 @@ Topik: Manajemen Memori – Page Replacement (FIFO & LRU)
 ## Deskripsi Singkat
 Praktikum minggu ke-10 berfokus pada simulasi Manajemen Memori Virtual, khususnya pada strategi Page Replacement. Mahasiswa diajak untuk memahami bagaimana Sistem Operasi mengelola keterbatasan memori fisik (RAM) dengan cara menukar halaman (page) yang berada di memori utama. Fokus utama adalah mengimplementasikan dan membandingkan efisiensi antara algoritma FIFO dan LRU melalui perhitungan page fault.
 
+---
+
 ## Dasar Teori
 1. FIFO (First-In, First-Out): Algoritma penggantian halaman yang paling sederhana. Halaman yang berada di memori paling lama (yang pertama kali masuk) akan menjadi halaman pertama yang diganti saat terjadi page fault.
 2. LRU (Least Recently Used): Algoritma yang lebih adaptif dengan memanfaatkan prinsip lokalitas temporal. Halaman yang akan diganti adalah halaman yang paling lama tidak diakses/digunakan oleh CPU.
@@ -22,66 +24,64 @@ Praktikum minggu ke-10 berfokus pada simulasi Manajemen Memori Virtual, khususny
 ---
 
 ## Kode / Perintah
-Python
 
-# Reference String & Konfigurasi Frame
+```python
+# SIMULASI 1: FIFO (First-In First-Out)
+frames_fifo = [] 
 
-reference_string = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2]
-frames = 3
-
-def print_process_table(title, steps):
-    print(f"\n{title}")
-    print("+" + "-"*8 + "+" + "-"*10 + "+" + "-"*10 + "+" + "-"*10 + "+" + "-"*10 + "+")
-    print("| Page   | Frame 1  | Frame 2  | Frame 3  | Status   |")
-    print("+" + "-"*8 + "+" + "-"*10 + "+" + "-"*10 + "+" + "-"*10 + "+" + "-"*10 + "+")
-    for page, mem, status in steps:
-        print(f"| {page:<6} | {mem[0]:<8} | {mem[1]:<8} | {mem[2]:<8} | {status:<8} |")
-    print("+" + "-"*8 + "+" + "-"*10 + "+" + "-"*10 + "+" + "-"*10 + "+" + "-"*10 + "+")
-
-# ================= FIFO IMPLEMENTATION =================
-def fifo_page_replacement(ref, frames):
-    memory = ['-'] * frames
-    fifo_index = 0
-    steps = []
-    page_fault = 0
-    for page in ref:
-        if page in memory:
-            steps.append((page, memory.copy(), "HIT"))
+for i, page in enumerate(pages):
+    status = ""
+    
+    # Cek apakah page sudah ada di frame (HIT)
+    if page in frames_fifo:
+        status = "HIT"
+    else:
+        status = "MISS"
+        fifo_faults += 1
+        
+        # Jika frame belum penuh, masukkan saja
+        if len(frames_fifo) < jumlah_frame:
+            frames_fifo.append(page)
         else:
-            page_fault += 1
-            memory[fifo_index] = page
-            fifo_index = (fifo_index + 1) % frames
-            steps.append((page, memory.copy(), "FAULT"))
-    return page_fault, steps
+            # Jika penuh, ganti halaman yang ditunjuk pointer
+            frames_fifo[pointer] = page
+            # Geser pointer secara memutar (0 -> 1 -> 2 -> 0 -> ...)
+            pointer = (pointer + 1) % jumlah_frame
+            
+    cetak_langkah(i+1, page, status, frames_fifo)
 
-# ================= LRU IMPLEMENTATION =================
-def lru_page_replacement(ref, frames):
-    memory = ['-'] * frames
-    last_used = {}
-    steps = []
-    page_fault = 0
-    for time, page in enumerate(ref):
-        if page in memory:
-            steps.append((page, memory.copy(), "HIT"))
+# SIMULASI 2: LRU (Least Recently Used)
+frames_lru = []
+lru_faults = 0
+
+for i, page in enumerate(pages):
+    status = ""
+    
+    if page in frames_lru:
+        status = "HIT"
+        # Logika LRU: Jika terpakai, pindahkan ke posisi paling kanan (Most Recent)
+        frames_lru.remove(page)
+        frames_lru.append(page)
+    else:
+        status = "MISS"
+        lru_faults += 1
+        
+        if len(frames_lru) < jumlah_frame:
+            frames_lru.append(page)
         else:
-            page_fault += 1
-            if '-' in memory:
-                index = memory.index('-')
-            else:
-                lru_page = min(last_used, key=last_used.get)
-                index = memory.index(lru_page)
-                del last_used[lru_page]
-            memory[index] = page
-            steps.append((page, memory.copy(), "FAULT"))
-        last_used[page] = time
-    return page_fault, steps
+            # Jika penuh, hapus yang paling kiri (paling lama tak dipakai)
+            frames_lru.pop(0)
+            frames_lru.append(page)
+            
+    cetak_langkah(i+1, page, status, frames_lru)
+print(">> Kode lengkap ada di folder code/")
+```
+---
 
-# Eksekusi Simulasi
-fifo_fault, fifo_steps = fifo_page_replacement(reference_string, frames)
-lru_fault, lru_steps = lru_page_replacement(reference_string, frames)
-
-print_process_table("SIMULASI FIFO", fifo_steps)
-print_process_table("SIMULASI LRU", lru_steps)
+Perintah eksekusi:
+```text
+python code/page_replacement.py
+```
 ---
 
 ## Hasil Eksekusi
@@ -91,15 +91,16 @@ Sertakan screenshot hasil percobaan atau diagram:
 ---
 
 ## Analisis
-## Analisis Perbandingan
+1. Tabel Perbandingan Algoritma
 
 | Algoritma | Jumlah Page Fault | Keterangan |
 | --- | --- | --- |
-| **FIFO** | **10** | Mengganti halaman berdasarkan urutan masuk (paling "tua") tanpa melihat riwayat akses. |
-| **LRU** | **8** | Mengganti halaman yang paling lama tidak digunakan; lebih adaptif terhadap pola akses. |
+| **FIFO** | **10** | Membuang halaman berdasarkan waktu masuk tanpa melihat frekuensi akses. |
+| **LRU** | **9** | Mempertahankan halaman yang baru saja digunakan untuk meminimalkan fault. |
 
-* **Mengapa Berbeda?** FIFO hanya mempertimbangkan waktu masuk, sehingga halaman yang sering dipakai tetap bisa terhapus jika sudah lama berada di memori. Sebaliknya, LRU memantau riwayat akses dan mempertahankan halaman yang baru saja digunakan.
-* **Mana yang Lebih Efisien?** **LRU lebih efisien** karena menghasilkan *page fault* lebih sedikit (8 vs 10). LRU mengikuti prinsip *Locality of Reference*, yaitu kecenderungan program mengakses kembali data yang baru saja digunakan.
+2. * **Mengapa Berbeda?** FIFO hanya mempertimbangkan waktu masuk, sehingga halaman yang sering dipakai tetap bisa terhapus jika sudah lama berada di memori. Sebaliknya, LRU memantau riwayat akses dan mempertahankan halaman yang baru saja digunakan.
+     
+3. * **Mana yang Lebih Efisien?** **LRU lebih efisien** karena menghasilkan *page fault* lebih sedikit (8 vs 10). LRU mengikuti prinsip *Locality of Reference*, yaitu kecenderungan program mengakses kembali data yang baru saja digunakan.
 
 ---
 
